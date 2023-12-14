@@ -14,6 +14,6 @@ class Config:
 class DevelopmentConfig:
     ENV = "development"
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password123@localhost/microservice-app'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:password123@localhost/microserviceapp'
     SQLALCHEMY_ECHO = True
 

@@ -1,20 +1,26 @@
+import os
 from ..models import User
-from flask import request, jsonify
-# from passlib.hash import sha256_crypt
+from flask import request, jsonify, make_response
 from .. import db
 from . import user_api_blueprint
-from cryptography.fernet import Fernet
+from flask_login import login_user
+from ..helper import AESCipher
+from application.userservice.decorates import header_required
 
 
+key = "rahasia"
+cipher = AESCipher(key)
+
+
+# register
 @user_api_blueprint.route('/api/user/create', methods=['POST'])
 def user_register():
     first_name = request.json['first_name']
     last_name = request.json['last_name']
     email = request.json['email']
     username = request.json['username']
-
-    encryption_key = generate_key()
-    password = encrypt_password((str(request.json['password'])), encryption_key)
+    
+    password  = cipher.encrypt((str(request.json['password'])))
 
     user = User()
     user.email = email
@@ -34,19 +40,47 @@ def user_register():
         }
     )
 
-# Fungsi untuk menghasilkan kunci
-def generate_key():
-    return Fernet.generate_key()
 
-# Fungsi untuk enkripsi password
-def encrypt_password(password, key):
-    cipher_suite = Fernet(key)
-    cipher_text = cipher_suite.encrypt(password.encode())
-    return cipher_text
+# login
+@user_api_blueprint.route('/api/user/login', methods=['POST'])
+def post_login():
+    username = request.json['username']
+    user =  User.query.filter_by(username=username).first()
+    if user:                
+        if cipher.decrypt(user.password) == (str(request.json['password'])):
+            user.encode_api_key()
+            db.session.commit()
+            login_user(user)
+            
+            return make_response(
+                jsonify({
+                    'message':'logged in',
+                    'token': user.api_key
+                })
+            )
+    return make_response(
+        jsonify({
+            'message': 'not logged in'
+        }), 401
+    )
 
-# Fungsi untuk dekripsi password
-def decrypt_password(encrypted_password, key):
-    cipher_suite = Fernet(key)
-    decrypted_text = cipher_suite.decrypt(encrypted_password).decode()
-    return decrypted_text
-
+@user_api_blueprint.route('/api/users', methods=['GET'])
+@header_required    
+def get_all_user():
+    users = User.query.all()
+    data = []
+    for x in users:
+        xusers = {}
+        xusers['user_id'] = x.id
+        xusers['username'] = x.username
+        xusers['first_name'] = x.first_name
+        xusers['last_name'] = x.last_name
+        xusers['email'] = x.email
+        data.append(xusers)
+        
+    return make_response(
+        jsonify({
+            'message':'success',
+            'data': data
+        }), 200
+    )

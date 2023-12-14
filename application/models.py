@@ -1,6 +1,8 @@
 from . import db
 from datetime import datetime
 from flask_login import UserMixin
+from passlib.hash import sha256_crypt
+from sqlalchemy import LargeBinary
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,7 +10,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     first_name = db.Column(db.String(255), nullable=True)
     last_name = db.Column(db.String(255), nullable=True)
-    password = db.Column(db.String(255), nullable=False)
+    password = db.Column(LargeBinary, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     authentication = db.Column(db.Boolean, default=False)
     api_key = db.Column(db.String(255), unique=True, nullable=True)
@@ -23,5 +25,8 @@ class User(UserMixin, db.Model):
             'username': self.username,
             'email': self.email,
             'is_admin': self.is_admin,
-            'is_active': True
+            'is_active': True 
         }
+    
+    def encode_api_key(self):
+        self.api_key = sha256_crypt.hash(self.username + str(datetime.utcnow))
