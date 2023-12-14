@@ -54,13 +54,13 @@ def post_login():
             
             return make_response(
                 jsonify({
-                    'message':'logged in',
+                    'message':'log in success',
                     'token': user.api_key
                 })
             )
     return make_response(
         jsonify({
-            'message': 'not logged in'
+            'message': 'logg in failed'
         }), 401
     )
 
