@@ -28,5 +28,4 @@ class User(UserMixin, db.Model):
             'is_active': True 
         }
     
-    def encode_api_key(self):
-        self.api_key = sha256_crypt.hash(self.username + str(datetime.utcnow))
+    

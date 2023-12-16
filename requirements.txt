@@ -1,0 +1,7 @@
+Flask==2.0.1
+Flask-Login==0.5.3
+Flask-Session==0.4.0
+SQLAlchemy==1.4.28
+passlib==1.7.4
+pycryptodome==3.12.0
+PyJWT==2.1.0
