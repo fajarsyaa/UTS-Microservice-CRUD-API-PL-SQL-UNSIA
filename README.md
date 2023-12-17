@@ -37,7 +37,7 @@
     <li>Clone the repository:</li>
 </ol>
 
-<pre><code>git clone https://github.com/your-username/user-service-api.git
+<pre><code>git clone https://github.com/fajarsyaa/uts-pl-sql.git
 cd user-service-api
 </code></pre>
 
