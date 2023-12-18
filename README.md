@@ -11,6 +11,8 @@
 <ol>
     <li>MUKHAMAD FAJAR SYAIHU WALID</li>
     <li>RAFI ANDHIKA GALUH</li>
+    <li>NAH’L ADDINIYAH HASANAH</li>
+    <li>Muh.Wildan Fiqri Ali</li>
 </ol>
 <br/><br/>
 
